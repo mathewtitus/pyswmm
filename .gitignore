@@ -6,6 +6,8 @@
 
 # virtual environment
 venv/
+.venv/
+.venv310/
 
 # Python special dirs and files
 *.egg-info
