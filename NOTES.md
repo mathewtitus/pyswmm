@@ -6,6 +6,13 @@ https://pypi.org/project/swmm-api
 
 ## pyswmm
 https://github.com/pyswmm
+Node depth refers to the depth of the water in that node (rather than depth from invert to water level)
+LID: Low Impact Development
+Use Link type Pump and set target_setting to [0, infty) [Espresso_Machine.pdf page 2]
+    If controlling a link make sure to remove SWMM-based [RULES] section
+    Set pump status to always ON, remove hysteresis for the pump (On/Off depths) and set them(who?) to 0
+    target_setting of 1 = 100% flow capacity (e.g. 100 LPS)
+    target_setting of 4 = 400% (e.g. 400 LPS)
 
 
 ## swmmio
