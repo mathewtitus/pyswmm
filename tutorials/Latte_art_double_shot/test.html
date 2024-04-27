@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>swmmio map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiZW1uZXQiLCJhIjoiY2pscGFpZjRlMjJmdDNsbjNycDN6a3J0OCJ9.wYmEb0AnxVVMKVhs2ns89A';
+var map = new mapboxgl.Map({
+    style:'mapbox://styles/emnet/ckjt4ym0q00cz19ob1y62adi5',
+    // center: [-75.148946, 39.921685],
+	center:[-89.45962962909307, 39.46439115390352],
+    zoom: 15,
+    container: 'map',
+});
+
+	map.fitBounds([[-89.46881454191568, 39.45332314279625], [-89.45031504068645, 39.47763744059621]]);
+conduits = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.464277, 39.477637], [-89.463304, 39.470394]]}, "properties": {"InletNode": "9", "OutletNode": "10", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.5, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 4.65, "MaxDay": 0, "MaxHr": "04:01", "MaxV": 7.6, "MaxQPerc": 0.3, "MaxDPerc": 0.38, "Name": "1"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.450315, 39.47062], [-89.456664, 39.469821]]}, "properties": {"InletNode": "19", "OutletNode": "20", "Length": 200, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 0.78, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 6.11, "MaxQPerc": 0.11, "MaxDPerc": 0.22, "Name": "4"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.456664, 39.469821], [-89.460169, 39.46827]]}, "properties": {"InletNode": "20", "OutletNode": "21", "Length": 200, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 0.78, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 9.0, "MaxQPerc": 0.06, "MaxDPerc": 0.17, "Name": "5"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.463304, 39.470394], [-89.460169, 39.46827]]}, "properties": {"InletNode": "10", "OutletNode": "21", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 1, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 4.93, "MaxDay": 0, "MaxHr": "02:53", "MaxV": 7.01, "MaxQPerc": 1.06, "MaxDPerc": 1.0, "Name": "6"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.460169, 39.46827], [-89.46156, 39.464359]]}, "properties": {"InletNode": "21", "OutletNode": "22", "Length": 300, "Roughness": 0.01, "InOffset": 1, "OutOffset": 1, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 2.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 5.41, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 7.18, "MaxQPerc": 0.18, "MaxDPerc": 0.29, "Name": "7"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.46156, 39.464359], [-89.459756, 39.460645]]}, "properties": {"InletNode": "22", "OutletNode": "16", "Length": 300, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 2.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 7.85, "MaxDay": 0, "MaxHr": "04:01", "MaxV": 6.84, "MaxQPerc": 0.33, "MaxDPerc": 0.39, "Name": "8"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.454371, 39.457733], [-89.452665, 39.455694], [-89.452571, 39.453323]]}, "properties": {"InletNode": "17", "OutletNode": "18", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 2.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 18.3, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 10.75, "MaxQPerc": 0.56, "MaxDPerc": 0.53, "Name": "10"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.468815, 39.462923], [-89.465899, 39.46293]]}, "properties": {"InletNode": "13", "OutletNode": "14", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.5, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 2.44, "MaxDay": 0, "MaxHr": "04:01", "MaxV": 6.36, "MaxQPerc": 0.16, "MaxDPerc": 0.27, "Name": "11"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.465899, 39.46293], [-89.465379, 39.460064]]}, "properties": {"InletNode": "14", "OutletNode": "15", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.5, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 2.44, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 5.3, "MaxQPerc": 0.21, "MaxDPerc": 0.31, "Name": "12"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.465379, 39.460064], [-89.459756, 39.460645]]}, "properties": {"InletNode": "15", "OutletNode": "16", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.5, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 8.98, "MaxDay": 0, "MaxHr": "04:01", "MaxV": 6.24, "MaxQPerc": 0.93, "MaxDPerc": 0.76, "Name": "13"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.45407, 39.462794], [-89.457667, 39.459963]]}, "properties": {"InletNode": "23", "OutletNode": "24", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 1.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 1.49, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 6.12, "MaxQPerc": 0.26, "MaxDPerc": 0.35, "Name": "14"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.459756, 39.460645], [-89.457667, 39.459963]]}, "properties": {"InletNode": "16", "OutletNode": "24", "Length": 100, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 2.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 16.83, "MaxDay": 0, "MaxHr": "04:01", "MaxV": 9.67, "MaxQPerc": 0.57, "MaxDPerc": 0.54, "Name": "15"}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-89.457667, 39.459963], [-89.454371, 39.457733]]}, "properties": {"InletNode": "24", "OutletNode": "17", "Length": 400, "Roughness": 0.01, "InOffset": 0, "OutOffset": 0, "InitFlow": 0, "MaxFlow": 0, "Shape": "CIRCULAR", "Geom1": 2.0, "Geom2": 0, "Geom3": 0, "Geom4": 0, "Barrels": 1, "Type": "CONDUIT", "MaxQ": 18.3, "MaxDay": 0, "MaxHr": "04:02", "MaxV": 9.87, "MaxQPerc": 0.62, "MaxDPerc": 0.57, "Name": "16"}}]}
+nodes = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.464277, 39.477637]}, "properties": {"InvertElev": 1000, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "9"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.463304, 39.470394]}, "properties": {"InvertElev": 995, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "10"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.468815, 39.462923]}, "properties": {"InvertElev": 995, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "13"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.465899, 39.46293]}, "properties": {"InvertElev": 990, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "14"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.465379, 39.460064]}, "properties": {"InvertElev": 987, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "15"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.459756, 39.460645]}, "properties": {"InvertElev": 985, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "16"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.454371, 39.457733]}, "properties": {"InvertElev": 980, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "17"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.450315, 39.47062]}, "properties": {"InvertElev": 1010, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "19"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.456664, 39.469821]}, "properties": {"InvertElev": 1005, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "20"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.460169, 39.46827]}, "properties": {"InvertElev": 990, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "21"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.46156, 39.464359]}, "properties": {"InvertElev": 987, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "22"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.45407, 39.462794]}, "properties": {"InvertElev": 990, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "23"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.457667, 39.459963]}, "properties": {"InvertElev": 984, "MaxDepth": 3.0, "InitDepth": 0.0, "SurchargeDepth": 0.0, "PondedArea": 0.0, "Name": "24"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-89.452571, 39.453323]}, "properties": {"InvertElev": 975, "OutfallType": "FREE", "StageOrTimeseries": "NO", "Name": "18"}}]}
+var sewer_source, node_source;
+
+map.on('load', function() {
+
+    // load the data into the map
+    sewer_source = map.addSource('sewer-data', {'type': 'geojson', 'data': conduits});
+    node_source =  map.addSource('node-data',  {'type': 'geojson', 'data': nodes});
+
+    map.addLayer({
+      "id": "sewer",
+      'type': 'line',
+      "source": "sewer-data",
+      'paint': {
+          'line-color': [
+              "interpolate-hcl", [ "linear" ], ["number",  [ "get", "MaxQPerc" ], 0],
+              0, '#5cd66e' ,  1, '#dde639' ,  2, '#e64839',
+          ],
+          'line-opacity': 0.85,
+          'line-width': [
+          'interpolate', [ "exponential", 10 ], [ 'zoom' ],
+          10, [ "ln", ["+", [ "get", "MaxQ" ], 1]],
+          15, [ "ln", ["+", [ "get", "MaxQ" ], 1]],
+        ],
+      }
+    });
+
+    map.addLayer({
+        "id": "sewer-hover",
+        'type': 'line',
+        "source": "sewer-data",
+        'paint': {
+            'line-color': "#8384a4",
+            'line-opacity': 1,
+            'line-width':4,
+        },
+        'filter':["==", "'InletNode'", ""],
+    });
+
+    map.addLayer({
+        "id": "node",
+        'type': 'circle',
+        "source": "node-data",
+        'paint': {
+            'circle-color': '#1182d9',
+            'circle-opacity': 0.75,
+            'circle-radius':3,
+        }
+    });
+
+    // When a click event occurs near a polygon, open a popup at the location of
+    // the feature, with description HTML from its properties.
+    map.on('click', function (e) {
+        //create a buffer to forgive those clumsy clicks
+        var x = e.point.x;
+        var y = e.point.y;
+        var clickbox = [[x-10, y-10], [x+10, y+10]]
+
+        var features = map.queryRenderedFeatures(clickbox, { layers: ['sewer', 'node'] });
+        if (!features.length) {
+            map.setFilter("sewer-hover", ["==", "Name", ""]);
+            return;
+        }
+
+        var feature = features[0];
+        console.log(feature)
+
+        // highlight whats been clicked
+        map.setFilter("sewer-hover", ["==", "Name", feature.properties.Name]);
+        html_message_start = '<strong>' + feature.properties.Name + '</strong><hr>';
+        html_message = [];
+        Object.keys(feature.properties).forEach(function(key) {
+            html_message.push(key + ': ' + feature.properties[key]);
+        });
+        html_message = html_message_start + html_message.join('<br>');
+
+        var popup = new mapboxgl.Popup()
+            .setLngLat(map.unproject(e.point))
+            .setHTML(html_message)
+            .addTo(map);
+    });
+    // Use the same approach as above to indicate that the symbols are clickable
+    // by changing the cursor style to 'pointer'
+    map.on('mousemove', function (e) {
+        var features = map.queryRenderedFeatures(e.point, { layers: ['sewer'] });
+        if (features.length==0) {
+            return;
+        }
+        map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+    });
+});
+
+</script>
+</body>
+</html>
