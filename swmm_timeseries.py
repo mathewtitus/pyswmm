@@ -24,21 +24,26 @@ def apply_time_series(input_file, sim_conf, series_name, data): # value, row, co
   '''
   Modify sim_conf to add the action:
     Replace/modify the time series `series_name` in the input file with 
-    `data` DataFrame. Input must be two columns, time then value.
+    `data` DataFrame. Input should be Series (one column), but can be two columns (time then value).
+    CA: Times may be hard to properly format and ensure they match across all elements of the simulation.
 
-  NB: In sample time series, columns are
+  NB: In sample time series of .inp file, columns are
     0: Time series name
     1: Time
     2: Value
   In particular, there was no separate Date column.
   '''
-  # # Create Config Handle
-  # sim_conf = SimulationPreConfig()
 
   for _ in range(len(data)):
     datum = data.iloc[_]
-    sim_conf.add_update_by_token("TIMESERIES", series_name, 1, datum.iloc[0], _)
-    sim_conf.add_update_by_token("TIMESERIES", series_name, 2, datum.iloc[1], _)
+    
+    if len(data.shape) == 2:
+      sim_conf.add_update_by_token("TIMESERIES", series_name, 1, datum.iloc[0], _)
+      sim_conf.add_update_by_token("TIMESERIES", series_name, 2, datum.iloc[1], _)
+    elif len(data.shape) == 1:
+      sim_conf.add_update_by_token("TIMESERIES", series_name, 2, datum, _)
+    else:
+      raise Exception(f"Problem with input data: {data.head()}")
 
   return sim_conf
 

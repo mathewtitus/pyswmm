@@ -243,7 +243,7 @@ def data_to_json(data):
   '''
   return dict(map(
       lambda x: (x[0], jsonify(x[1])),
-      get_data(output_path).items()
+      data.items()
     ))
 
 
@@ -257,6 +257,19 @@ def get_json(output_path):
 #
 
 
+# TODO
+def view_rainfall(output_path):
+  '''
+  '''
+  # get list of raingages & a sample subcatchment for each gage
+
+  # get the rainfall time series for each sample subc
+  series = subcatch_data(output_path)
+
+  # get total rainfall
+  rain = get_time_series(output_path).get(['time', 'rainfall'])
+
+  # plot each subcatchment in vertical subplots
 
 
 
