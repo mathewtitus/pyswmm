@@ -2,6 +2,7 @@
 # Mathew Titus, April 2024
 # 
 # Access & edit time series for PySWMM models.
+# TODO: Add edits for end date and end time to match # days
 # 
 ######################################################################
 

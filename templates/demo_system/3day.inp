@@ -1,0 +1,337 @@
+[TITLE]
+;;Project Title/Notes
+Tutorial Example
+
+[OPTIONS]
+;;Option             Value
+FLOW_UNITS           CFS
+INFILTRATION         MODIFIED_GREEN_AMPT
+FLOW_ROUTING         DYNWAVE
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+ALLOW_PONDING        NO
+SKIP_STEADY_STATE    NO
+
+START_DATE           01/10/2024
+START_TIME           00:00:00
+REPORT_START_DATE    01/10/2024
+REPORT_START_TIME    00:00:00
+END_DATE             01/13/2024
+END_TIME             00:00:00
+SWEEP_START          01/01
+SWEEP_END            12/31
+DRY_DAYS             0
+REPORT_STEP          00:15:00
+WET_STEP             00:05:00
+DRY_STEP             01:00:00
+ROUTING_STEP         0:00:20 
+RULE_STEP            00:00:00
+
+INERTIAL_DAMPING     PARTIAL
+NORMAL_FLOW_LIMITED  BOTH
+FORCE_MAIN_EQUATION  H-W
+VARIABLE_STEP        0.75
+LENGTHENING_STEP     0
+MIN_SURFAREA         12.566
+MAX_TRIALS           8
+HEAD_TOLERANCE       0.005
+SYS_FLOW_TOL         5
+LAT_FLOW_TOL         5
+MINIMUM_STEP         0.5
+THREADS              1
+
+[EVAPORATION]
+;;Data Source    Parameters
+;;-------------- ----------------
+CONSTANT         0.0
+DRY_ONLY         NO
+
+[RAINGAGES]
+;;Name           Format    Interval SCF      Source    
+;;-------------- --------- ------ ------ ----------
+Gage1            INTENSITY 1:00     1.0      TIMESERIES TS1             
+Gage2            INTENSITY 1:00     1.0      TIMESERIES TS2             
+
+[SUBCATCHMENTS]
+;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
+;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
+S1               Gage1            J1               4        50       400      0.5      0                        
+S2               Gage1            J2               4        50       400      0.5      0                        
+S3               Gage1            J3               4        25       400      0.5      0                        
+
+[SUBAREAS]
+;;Subcatchment   N-Imperv   N-Perv     S-Imperv   S-Perv     PctZero    RouteTo    PctRouted 
+;;-------------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+S1               0.01       0.1        0.05       0.05       25         OUTLET    
+S2               0.01       0.1        0.05       0.05       25         OUTLET    
+S3               0.01       0.1        0.05       0.05       25         OUTLET    
+
+[INFILTRATION]
+;;Subcatchment   Param1     Param2     Param3     Param4     Param5    
+;;-------------- ---------- ---------- ---------- ---------- ----------
+S1               3.5        0.5        0.26                            
+S2               3.5        0.5        0.26                            
+S3               3.5        0.5        0.26                            
+
+[JUNCTIONS]
+;;Name           Elevation  MaxDepth   InitDepth  SurDepth   Aponded   
+;;-------------- ---------- ---------- ---------- ---------- ----------
+J1               96         4          0          0          0         
+J2               90         4          0          0          0         
+J3               93         4          0          0          0         
+J4               88         4          0          0          0         
+
+[OUTFALLS]
+;;Name           Elevation  Type       Stage Data       Gated    Route To        
+;;-------------- ---------- ---------- ---------------- -------- ----------------
+Out1             85         FREE                        NO                       
+
+[CONDUITS]
+;;Name           From Node        To Node          Length     Roughness  InOffset   OutOffset  InitFlow   MaxFlow   
+;;-------------- ---------------- ---------------- ---------- ---------- ---------- ---------- ---------- ----------
+C1               J1               J2               400        0.01       0          0          0          0         
+C2               J2               J4               400        0.01       0          0          0          0         
+C3               J3               J4               400        0.01       0          0          0          0         
+C4               J4               Out1             400        0.01       0          0          0          0         
+
+[XSECTIONS]
+;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels    Culvert   
+;;-------------- ------------ ---------------- ---------- ---------- ---------- ---------- ----------
+C1               CIRCULAR     1                0          0          0          1                    
+C2               CIRCULAR     1                0          0          0          1                    
+C3               CIRCULAR     1                0          0          0          1                    
+C4               CIRCULAR     1.5              0          0          0          1                    
+
+[POLLUTANTS]
+;;Name           Units  Crain      Cgw        Crdii      Kdecay     SnowOnly   Co-Pollutant     Co-Frac    Cdwf       Cinit     
+;;-------------- ------ ---------- ---------- ---------- ---------- ---------- ---------------- ---------- ---------- ----------
+TSS              MG/L   0.0        0.0        0.0        0.0        NO         *                0.0        0.0        0.0       
+Lead             UG/L   0.0        0.0        0.0        0.0        NO         TSS              0.25       0.0        0.0       
+
+[LANDUSES]
+;;               Sweeping   Fraction   Last      
+;;Name           Interval   Available  Swept     
+;;-------------- ---------- ---------- ----------
+Residential      0          0          0         
+Undeveloped      0          0          0         
+
+[COVERAGES]
+;;Subcatchment   Land Use         Percent   
+;;-------------- ---------------- ----------
+
+[LOADINGS]
+;;Subcatchment   Pollutant        Buildup   
+;;-------------- ---------------- ----------
+
+[BUILDUP]
+;;Land Use       Pollutant        Function   Coeff1     Coeff2     Coeff3     Per Unit  
+;;-------------- ---------------- ---------- ---------- ---------- ---------- ----------
+Residential      TSS              NONE       0.0        0.0        0.0        AREA      
+Residential      Lead             NONE       0.0        0.0        0.0        AREA      
+Undeveloped      TSS              NONE       0.0        0.0        0.0        AREA      
+Undeveloped      Lead             NONE       0.0        0.0        0.0        AREA      
+
+[WASHOFF]
+;;Land Use       Pollutant        Function   Coeff1     Coeff2     SweepRmvl  BmpRmvl   
+;;-------------- ---------------- ---------- ---------- ---------- ---------- ----------
+Residential      TSS              EMC        0.0        0.0        0.0        0.0       
+Residential      Lead             EMC        0.0        0.0        0.0        0.0       
+Undeveloped      TSS              EMC        0.0        0.0        0.0        0.0       
+Undeveloped      Lead             EMC        0.0        0.0        0.0        0.0       
+
+[TIMESERIES]
+;;Name           Date       Time       Value     
+;;-------------- ---------- ---------- ----------
+TS1 0 0.608
+TS1 1 0.5506
+TS1 2 0.4089
+TS1 3 0.2859
+TS1 4 0.9523
+TS1 5 0.9022
+TS1 6 0.8863
+TS1 7 0.0435
+TS1 8 0.2532
+TS1 9 0.9556
+TS1 10  0.4189
+TS1 11  0.0907
+TS1 12  0.0227
+TS1 13  0.0998
+TS1 14  0.9468
+TS1 15  0.8527
+TS1 16  0.5874
+TS1 17  0.351
+TS1 18  0.5681
+TS1 19  0.6262
+TS1 20  0.4761
+TS1 21  0.814
+TS1 22  0.1518
+TS1 23  0.8377
+TS1 24  0.4407
+TS1 25  0.08
+TS1 26  0.978
+TS1 27  0.7077
+TS1 28  0.294
+TS1 29  0.3867
+TS1 30  0.4407
+TS1 31  0.4664
+TS1 32  0.1042
+TS1 33  0.1342
+TS1 34  0.0415
+TS1 35  0.0205
+TS1 36  0.2549
+TS1 37  0.8033
+TS1 38  0.3785
+TS1 39  0.362
+TS1 40  0.9741
+TS1 41  0.3463
+TS1 42  0.7263
+TS1 43  0.0308
+TS1 44  0.7168
+TS1 45  0.2741
+TS1 46  0.4516
+TS1 47  0.4516
+TS1 48  0.4068
+TS1 49  0.6962
+TS1 50  0.7316
+TS1 51  0.8813
+TS1 52  0.1612
+TS1 53  0.857
+TS1 54  0.4541
+TS1 55  0.7292
+TS1 56  0.5943
+TS1 57  0.2591
+TS1 58  0.2929
+TS1 59  0.0839
+TS1 60  0.4279
+TS1 61  0.4847
+TS1 62  0.8754
+TS1 63  0.4938
+TS1 64  0.7074
+TS1 65  0.2249
+TS1 66  0.2121
+TS1 67  0.158
+TS1 68  0.4499
+TS1 69  0.0948
+TS1 70  0.4812
+TS1 71  0.0989
+;
+TS2 0 0.3473
+TS2 1 0.2996
+TS2 2 0.8245
+TS2 3 0.312
+TS2 4 0.3475
+TS2 5 0.6096
+TS2 6 0.7446
+TS2 7 0.0832
+TS2 8 0.1298
+TS2 9 0.5903
+TS2 10  0.1191
+TS2 11  0.7333
+TS2 12  0.307
+TS2 13  0.8812
+TS2 14  0.6375
+TS2 15  0.6517
+TS2 16  0.4207
+TS2 17  0.0448
+TS2 18  0.5052
+TS2 19  0.5267
+TS2 20  0.066
+TS2 21  0.8373
+TS2 22  0.3072
+TS2 23  0.4947
+TS2 24  0.6997
+TS2 25  0.2559
+TS2 26  0.5095
+TS2 27  0.7601
+TS2 28  0.8133
+TS2 29  0.324
+TS2 30  0.3826
+TS2 31  0.3938
+TS2 32  0.7364
+TS2 33  0.3092
+TS2 34  0.2978
+TS2 35  0.7935
+TS2 36  0.9871
+TS2 37  0.1464
+TS2 38  0.0678
+TS2 39  0.1381
+TS2 40  0.788
+TS2 41  0.9877
+TS2 42  0.3837
+TS2 43  0.9768
+TS2 44  0.4613
+TS2 45  0.7948
+TS2 46  0.6333
+TS2 47  0.1228
+TS2 48  0.1495
+TS2 49  0.883
+TS2 50  0.5866
+TS2 51  0.1039
+TS2 52  0.9363
+TS2 53  0.6431
+TS2 54  0.4575
+TS2 55  0.6529
+TS2 56  0.8766
+TS2 57  0.9568
+TS2 58  0.0722
+TS2 59  0.2955
+TS2 60  0.1159
+TS2 61  0.6656
+TS2 62  0.4608
+TS2 63  0.2447
+TS2 64  0.2127
+TS2 65  0.9314
+TS2 66  0.7814
+TS2 67  0.2145
+TS2 68  0.5904
+TS2 69  0.5921
+TS2 70  0.6401
+TS2 71  0.3902
+
+[REPORT]
+;;Reporting Options
+SUBCATCHMENTS ALL
+NODES ALL
+LINKS ALL
+
+[TAGS]
+
+[MAP]
+DIMENSIONS 0.000 0.000 10000.000 10000.000
+Units      None
+
+[COORDINATES]
+;;Node           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+J1               6913.357           8303.249          
+J2               6913.357           6317.690          
+J3               4602.888           8537.906          
+J4               4602.888           6317.690          
+Out1             2274.368           6317.690          
+
+[VERTICES]
+;;Link           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+
+[Polygons]
+;;Subcatchment   X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+S1               5196.656           9258.649          
+S1               5199.002           8249.296          
+S1               6354.237           8249.296          
+S1               6354.237           9260.126          
+S2               6299.639           7716.606          
+S2               6299.639           6823.105          
+S2               5216.606           6823.105          
+S2               5216.606           7716.606          
+S3               4007.220           9259.928          
+S3               4007.220           8267.148          
+S3               2761.733           8267.148          
+S3               2761.733           9259.928          
+
+[SYMBOLS]
+;;Gage           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+Gage1            4620.939           9187.726          
+Gage2            6393.211           7878.359          
+

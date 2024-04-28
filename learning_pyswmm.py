@@ -11,13 +11,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import swmm_utils as su
 import swmm_timeseries as st
+import simulation_sampler as ss
 from pyswmm import Simulation, Nodes, Links, Output, SubcatchSeries, NodeSeries, LinkSeries, RainGages, SystemSeries, SimulationPreConfig, Subcatchments
 
 from pandas import DataFrame as df
 from pandas import concat
 
-sim_path = r'../tutorials/Latte/Example1b.inp'
+# sim_path = r'./tutorials/Latte/Example1b.inp'
+sim_path = 'templates/demo_system/3day.inp'
 run_sim = False;
+
+ss.execute_this_shit()
 
 if run_sim:
     # with Simulation(r'../tutorials/Latte/Example1.inp') as sim:
@@ -37,8 +41,8 @@ if run_sim:
     sim.close()
 
 
-output_filepath = '../tutorials/Latte/Example1b.out'
-out = Output(output_filepath)
+# output_filepath = './tutorials/Latte/Example1b.out'
+# out = Output(output_filepath)
 
 # js = su.get_data(output_filepath)
 # series = su.get_time_series(output_filepath)
@@ -54,36 +58,36 @@ out = Output(output_filepath)
 
 
 
-# Create Config Handle
-sim_conf = SimulationPreConfig()
+# # Create Config Handle
+# sim_conf = SimulationPreConfig()
 
-# Specifying the update parameters
-# Parameter Order:
-# Section, Object ID, Parameter Index, New Value, Obj Row Num (optional)
-# sim_conf.add_update_by_token("SUBCATCHMENTS", "S1", 2, "J2")
-sim_conf.add_update_by_token("TIMESERIES", "TS1", 2, 8.0, 5)
+# # Specifying the update parameters
+# # Parameter Order:
+# # Section, Object ID, Parameter Index, New Value, Obj Row Num (optional)
+# # sim_conf.add_update_by_token("SUBCATCHMENTS", "S1", 2, "J2")
+# sim_conf.add_update_by_token("TIMESERIES", "TS1", 2, 8.0, 5)
 
-with Simulation(sim_path, outputfile="../tutorials/Latte/ex_1c.out", sim_preconfig = sim_conf) as sim:
-    # S1 = Subcatchments(sim)["S1"]
-    # print(S1.connection)
+# with Simulation(sim_path, outputfile="../tutorials/Latte/ex_1c.out", sim_preconfig = sim_conf) as sim:
+#     # S1 = Subcatchments(sim)["S1"]
+#     # print(S1.connection)
 
-    for step in sim:
-        pass
+#     for step in sim:
+#         pass
 
-output_filepath = "../tutorials/Latte/ex_1c.out"
-js = su.get_data(output_filepath)
+# output_filepath = "templates/demo_system/3day.out"
+# js = su.get_data(output_filepath)
 
-times = st.get_times(output_filepath)
-data = np.abs(2 * np.random.randn(len(times)))
+# times = st.get_times(output_filepath)
+# data = np.abs(2 * np.random.randn(len(times)))
 
-new_ts = pd.DataFrame([times, data])
+# new_ts = pd.DataFrame([times, data])
 
-sim_conf = SimulationPreConfig()
-sim_conf = st.apply_time_series(sim_path, sim_conf, "TS3", new_ts.T)
+# sim_conf = SimulationPreConfig()
+# sim_conf = st.apply_time_series(sim_path, sim_conf, "TS3", new_ts.T)
 
-with Simulation(sim_path, outputfile="../tutorials/Latte/new_ts_ex.out", sim_preconfig = sim_conf) as sim:
-    for step in sim:
-        pass
+# with Simulation(sim_path, outputfile="../tutorials/Latte/new_ts_ex.out", sim_preconfig = sim_conf) as sim:
+#     for step in sim:
+#         pass
 
 
 
