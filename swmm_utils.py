@@ -9,6 +9,7 @@
 ######################################################################
 
 import pandas as pd
+import numpy as np
 from pyswmm import Output, LinkSeries, NodeSeries, SubcatchSeries, SystemSeries
 
 def framify(dic, col):
@@ -252,6 +253,20 @@ def get_json(output_path):
   Formulate JSON description of output, return.
   '''
   return data_to_json(get_data(output_path))
+
+
+def swmm_TS_template(name, days):
+  '''
+
+  '''
+
+  output_string = ''
+  for ind in range(days):
+    output_string += f"{name}\t{ind}\t{np.round(np.random.rand(), 4)}\n"
+
+  return output_string
+
+
 
 
 #
