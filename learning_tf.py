@@ -77,9 +77,7 @@ history = model.fit(
     # Calculate validation results on 20% of the training data.
     validation_split = 0.4)
 
-
-# model.fit(x_train, y_train, epochs=5)
-# model.evaluate(x_test, y_test)
+model.save(f"./templates/{template}/models/{run_name}_model_{str(dt.datetime.now().timestamp()).split('.')[0]}.keras")
 
 def plot_loss(history, ax=None):
   if ax:
@@ -145,8 +143,8 @@ ax.plot(times2, L2, label="error")
 ax.plot(times2, X2.S1_rainfall_m0, label="rain")
 
 ax.legend()
-plt.title(f"Model trained on {X.shape[0]} data points, validated on a hold-out 72-hr period.")
-fig.set_size_inches((8,6))
+plt.title(f"Model trained on {X.shape[0]} data points, validated on a hold-out 48-hr period.")
+fig.set_size_inches((10,6))
 plt.savefig(f"./templates/{template}/models/{run_name}_val_{str(dt.datetime.now().timestamp()).split('.')[0]}.png")
 plt.show()
 
