@@ -47,7 +47,7 @@ def link_data(output_path):
   num_links = len(link_names)
 
   # get time series variables
-  first_link_name = out.links.keys().__iter__().__next__
+  first_link_name = out.links.keys().__iter__().__next__()
   print(f"First link name: {first_link_name}")
   all_vars = list(LinkSeries(out)[first_link_name].__annotations__.keys())
   print("Variable list:")
@@ -269,10 +269,9 @@ def swmm_TS_template(name, days):
 
 
 
-#
+import matplotlib.pyplot as plt
 
-
-# TODO
+# TODO: 
 def view_rainfall(output_path):
   '''
   '''
@@ -285,9 +284,13 @@ def view_rainfall(output_path):
   rain = get_time_series(output_path).get(['time', 'rainfall'])
 
   # plot each subcatchment in vertical subplots
+  plt.plot(rain.time, rain.rainfall)
+  plt.show()
 
 
 
 
+
+# 
 
 

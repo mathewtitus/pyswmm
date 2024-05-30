@@ -14,6 +14,16 @@
 
 ## Getting started
 
+Create virtual environment:
+`python3 -m venv .venv`
+
+Activate it and install dependencies:
+`
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+`
+
 * Project Website: [www.pyswmm.org](https://www.pyswmm.org)
 
 * [Official PySWMM Documentation](http://docs.pyswmm.org)

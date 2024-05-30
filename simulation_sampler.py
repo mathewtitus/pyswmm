@@ -9,9 +9,10 @@
 
 import itertools
 import numpy as np
+from functools import reduce
 import matplotlib.pyplot as plt
 import pandas as pd
-from pyswmm import SimulationPreConfig
+from pyswmm import Simulation, SimulationPreConfig
 
 import swmm_timeseries as st
 
@@ -62,6 +63,9 @@ def get_constant(length):
 
 
 def get_poisson(length, lam=10.0):
+  '''
+  lam: lambda, the intensity of the Poisson process
+  '''
   return np.random.poisson(lam, length);
 
 
@@ -78,7 +82,7 @@ def sample_24hr(rain_intensity, series_type="iid"):
   # hourly interval
   length = 24;
 
-  # set total rainfall for the day
+  # set total rainfall for the day (uniformly drawn from interval defined in intensity_class)
   rain_stats = intensity_class[rain_intensity]
   total_rain = rain_stats['start'] + rain_stats['length'] * np.random.rand()
 
@@ -176,10 +180,15 @@ def generate_samples(template, rain_gage_attrs):
       series_name = rain_gage_attrs['names'][ent]
 
       # transform couplet to a Series
-      data = pd.Series(seq)
+      rain = pd.Series(
+        reduce(
+          lambda x,y: np.hstack((x,y)),
+          map(sample_24hr, seq)
+        )
+      )
 
       # update `ent`th raingage
-      sim_conf = st.apply_time_series(template, sim_conf, series_name, data)
+      sim_conf = st.apply_time_series(template, sim_conf, series_name, rain)
 
     # record the new PreConfig
     preconfigs.append(sim_conf)
@@ -187,7 +196,7 @@ def generate_samples(template, rain_gage_attrs):
   return preconfigs
 
 
-def step_through_samples(template_name, configs, num_procs=1):
+def step_through_samples(template_name, rain_gage_attrs, num_procs=1):
   '''
   ...
   '''
@@ -200,14 +209,15 @@ def step_through_samples(template_name, configs, num_procs=1):
   configs = generate_samples(template, rain_gage_attrs)
 
   # run the sample
-  for conf in configs:
-    with Simulation(template,  outputfile=f"{output_root}/{_}.out", sim_preconfig = conf) as sim:
+  for ind, conf in enumerate(configs):
+    with Simulation(template,  outputfile=f"{output_root}/{ind}.out", sim_preconfig = conf) as sim:
       for step in sim:
         pass
 
-def execute_this_shit():
 
-  template = "demo_system"
+def execute_this_shit(template_name="latest_run"):
+  '''
+  '''
 
   rgs = {
     "names": ["TS1", "TS2"],
@@ -217,12 +227,18 @@ def execute_this_shit():
   num_procs = 1;
 
   step_through_samples(
-    template,
-    generate_samples(template, rgs),
+    template_name,
+    rgs,
     num_procs
   )
 
 
+
+
+if __name__ == "__main__":
+  template = "demo_system"
+  input(f"Sure you want to overwrite everything in the {template} folder?")
+  execute_this_shit(template)
 
 
 #
