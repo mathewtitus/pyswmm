@@ -1,12 +1,19 @@
-# Build dependencies
-#python
-wheel
-pytest
-julian==0.14
-swmm-toolkit==0.15.3
-aenum==3.1.11
-setuptools
-packaging
-numpy
-pandas
-matplotlib
+-# Build dependencies
+-#python
+-wheel
+-pytest
+-julian==0.14
+-swmm-toolkit==0.15.3
+-aenum==3.1.11
+-setuptools
+-packaging
+-numpy
+-pandas
+-matplotlib
+-geojson
+-geopandas
+-pyswmm
+-shapely
+-swmm-api
+-swmmio
+-tqdm
