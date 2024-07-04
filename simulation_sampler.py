@@ -1,6 +1,8 @@
 # simulation_sampler.py
 # Mathew Titus, April 2023
 # 
+# NB: Run these scripts from `pyswmm` root directory.
+# 
 # TODO: Create a system for formulating a large number of different
 # rainfall behaviors and making them into time series for integration
 # into the SWMM model training data.
@@ -156,6 +158,8 @@ def generate_samples(template, rain_gage_attrs):
   Output: 
     Pickled List of SimulationPreConfig objects for creating each of the above simulation edits.
   '''
+  num_gage = len(rain_gage_attrs["names"]);
+
   # initialize PreConfig list
   preconfigs = []
 
@@ -167,28 +171,49 @@ def generate_samples(template, rain_gage_attrs):
   
   # np.repeat(base_elements, rain_gage_attrs['days'])
   sequences = list(itertools.product(*premap))
-  combos = list(itertools.product(sequences, sequences))
+  if num_gage == 2:
+    combos = list(itertools.product(sequences, sequences));
+  elif num_gage == 1:
+    combos = list(sequences);
+  else:
+    raise Exception(f"Error: rain_gage_attrs malconfigured; can only handle 1 or 2 gages as is.\n{rain_gage_attrs}");
 
   # generate time series
-  for combo in combos:
+  for combo in combos[:5]:
     # initiate PreConfig object
     sim_conf = SimulationPreConfig()
 
     # update each raingage in turn
-    for ent, seq in enumerate(combo):
+    if num_gage == 1:
       # get time series name
-      series_name = rain_gage_attrs['names'][ent]
-
+      series_name = rain_gage_attrs['names'][0]
+    
       # transform couplet to a Series
       rain = pd.Series(
         reduce(
           lambda x,y: np.hstack((x,y)),
-          map(sample_24hr, seq)
+          map(sample_24hr, combo)
         )
       )
 
       # update `ent`th raingage
       sim_conf = st.apply_time_series(template, sim_conf, series_name, rain)
+
+    else:
+      for ent, seq in enumerate(combo):
+        # get time series name
+        series_name = rain_gage_attrs['names'][ent]
+
+        # transform couplet to a Series
+        rain = pd.Series(
+          reduce(
+            lambda x,y: np.hstack((x,y)),
+            map(sample_24hr, seq)
+          )
+        )
+
+        # update `ent`th raingage
+        sim_conf = st.apply_time_series(template, sim_conf, series_name, rain)
 
     # record the new PreConfig
     preconfigs.append(sim_conf)
@@ -215,30 +240,35 @@ def step_through_samples(template_name, rain_gage_attrs, num_procs=1):
         pass
 
 
-def execute_this_shit(template_name="latest_run"):
-  '''
-  '''
-
-  rgs = {
+demo_rgs = {
     "names": ["TS1", "TS2"],
     "days": 3
   }
 
-  num_procs = 1;
+
+def execute_this_shit(template:str="demo_system", rgs:dict=demo_rgs, num_procs:int=1):
+  '''
+  sdfjajd
+  '''
 
   step_through_samples(
-    template_name,
+    template,
     rgs,
     num_procs
   )
 
 
 
-
-if __name__ == "__main__":
-  template = "demo_system"
+if __name__=="__main__":
   input(f"Sure you want to overwrite everything in the {template} folder?")
-  execute_this_shit(template)
+
+  # run demo version
+  execute_this_shit()
+
+  # run WS full system sim
+  template = "ws_full"
+  rgs = { "names": ["TS1"], "days": 3 }
+  execute_this_shit(template, rgs, 1)
 
 
 #
