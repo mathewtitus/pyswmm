@@ -9,6 +9,8 @@
 # 
 ########################################################################
 
+from tqdm import tqdm
+import os
 import itertools
 import numpy as np
 from functools import reduce
@@ -122,12 +124,12 @@ def get_sample(raintypes):
     return np.array([])
 
   # step through each day
-  for ent in raintypes:
+  for ent, typ in enumerate(raintypes):
     if ent < warmup_days:
-      new_day = sample_24hr(raintypes[ent], "constant")
+      new_day = sample_24hr(typ, "constant")
       full_series = np.concatenate([full_series, new_day])
     else:
-      new_day = sample_24hr(raintypes[ent], "iid")
+      new_day = sample_24hr(typ, "iid")
       full_series = np.concatenate([full_series, new_day])
 
   return full_series;
@@ -179,7 +181,7 @@ def generate_samples(template, rain_gage_attrs):
     raise Exception(f"Error: rain_gage_attrs malconfigured; can only handle 1 or 2 gages as is.\n{rain_gage_attrs}");
 
   # generate time series
-  for combo in combos[:5]:
+  for combo in combos:
     # initiate PreConfig object
     sim_conf = SimulationPreConfig()
 
@@ -228,14 +230,20 @@ def step_through_samples(template_name, rain_gage_attrs, num_procs=1):
 
   # find template file
   template = f"templates/{template_name}/{rain_gage_attrs['days']}day.inp"
-  output_root = f"templates/{template_name}/{rain_gage_attrs['days']}day/"
+  output_root = f"templates/{template_name}/{rain_gage_attrs['days']}day"
+
+  if os.path.exists(output_root+"/"):
+    pass
+  else:
+    os.makedirs(output_root+"/")
+  print(f"Running template {template} to folder {output_root}/")
 
   # generate congif files
   configs = generate_samples(template, rain_gage_attrs)
 
   # run the sample
-  for ind, conf in enumerate(configs):
-    with Simulation(template,  outputfile=f"{output_root}/{ind}.out", sim_preconfig = conf) as sim:
+  for ind, conf in tqdm(enumerate(configs)):
+    with Simulation(template,  outputfile=f"{output_root}/{ind+64}.out", sim_preconfig = conf) as sim:
       for step in sim:
         pass
 
@@ -260,15 +268,15 @@ def execute_this_shit(template:str="demo_system", rgs:dict=demo_rgs, num_procs:i
 
 
 if __name__=="__main__":
-  input(f"Sure you want to overwrite everything in the {template} folder?")
+  # input(f"Sure you want to overwrite everything in the {template} folder?")
 
   # run demo version
-  execute_this_shit()
+  # execute_this_shit()
 
   # run WS full system sim
   template = "ws_full"
   rgs = { "names": ["TS1"], "days": 3 }
-  execute_this_shit(template, rgs, 1)
+  execute_this_shit(template, rgs, 8)
 
 
 #

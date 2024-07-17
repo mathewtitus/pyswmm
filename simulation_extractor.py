@@ -20,7 +20,7 @@ import swmm_timeseries as st
 import swmm_utils as su
 
 
-machine = "mac"; # set to "stoner" when on PC; set to "mac" o/w
+machine = "stoner"; # set to "stoner" when on PC; set to "mac" o/w
 
 def get_local_dir(machine="mac"):
   if machine == "mac":
@@ -70,11 +70,20 @@ def extraction(out, model_defn):
   return df;
 
 
-def tf_prep(template_name, run_name, var_file):
+def tf_prep(template_name, swmm_outfile, var_file):
   '''
+  Input:
+    subtemplate_name: templates/[template], AKA: the run (e.g. 3day, 5day, ...)
+    swmm_outfile: the outfile name (e.g. 0.out, 1.out, ...)
+    var_file: where the different network elements' variables of interest are defined. See templates/demo_system/var_defs.json for an example.
+  Output:
+    ...
   '''
-  tem_folder = f"{get_local_dir(machine)}templates/{template_name}/"
-  run_folder = f"{tem_folder}{run_name}"
+  print(f"tf_prep call\n\ttemplate_name: {template_name}\n\tswmm_outfile: {swmm_outfile}\n\tvar_file: {var_file}")
+  tem_folder = f"{get_local_dir(machine)}{template_name}/"
+  run_folder = f"{tem_folder}{swmm_outfile}"
+  print(f"\ttem_folder: {tem_folder}")
+  print(f"\trun_folder: {run_folder}")
 
   # get variable definitions from var_file
   with open(f"{tem_folder}{var_file}", "r") as f:
@@ -135,22 +144,29 @@ def ext2json(template_name, run_name, var_file):
   Goes to run folder, selects each output in turn and converts to JSON
   Find output at ./templates/{template_name}/outputs/{run_name}/
   '''
+  print(f"ext2json call\n\ttemplate_name: {template_name}\n\trun_name: {run_name}\n\tvar_file: {var_file}")
   # find runs
-  folder_name = f"templates/{template_name}/{run_name}/"
-  files = [x for x in os.listdir(folder_name) if x.find(".out")>=0]
+  folder_name = f"templates/{template_name}"
+  files = [x for x in os.listdir(f"{folder_name}/{run_name}") if x.find(".out")>=0]
 
   # prep save path
   save_loc = f"templates/{template_name}/outputs/{run_name}/"
-  os.makedir(save_loc)
+  if not os.path.exists(save_loc):
+    os.makedirs(save_loc)
 
   # iterate through run extractions
   for run in files:
     outfile = run.replace(".out", ".json")
-    df, times = tf_prep(template_name, folder_name+outfile, varfile)
+    df, times = tf_prep(folder_name, f"{run_name}/{run}", var_file)
     df = df.assign(time=times)
-    js = df.to_json(f"templates/{template}/{save_loc}/{run_num}.json", indent=1)
+    js = df.to_json(f"{save_loc}{outfile}", indent=1)
 
 
+
+
+
+if __name__=="__main__":
+  ext2json("ws_full", "3day", "var_defs.json")
 
 
 

@@ -229,6 +229,7 @@ def get_data(output_path):
   '''
   Collect the link, node, and subcatchment data from an output file.
   '''
+  print(f"get_data call\n\toutput_path: {output_path}")
   data = {
     'links': link_data(output_path),
     'nodes': node_data(output_path),
