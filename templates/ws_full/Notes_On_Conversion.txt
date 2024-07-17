@@ -1,0 +1,25 @@
+Length of 33-470001.1 : 5.427574
+Connecting nodes : 33-470001, I33-470901
+
+33-470001 : InvertEl : 41.809416
+          : Max Depth : 7.568184
+I33-470901 : InvertEl : 47.341536
+           : Max Depth : 5.663184
+
+### Added 0.5 to Length of Conduit 33-470001.1 so that it could span the distance between the nodes.
+
+33-470001.1 33-470001 I33-470901 5.427574 0.006914 0.000000 0.000000 0.000000
+>>>
+33-470001.1 33-470001 I33-470901 5.927574 0.006914 0.000000 0.000000 0.000000
+
+Junction [Name, Elevation, ...]: 
+33-470001 41.809416 7.568184 0.000000 999.000000 0.000000
+I33-470901 47.341536 5.663184 0.000000 999.000000 0.000000
+
+
+Outfall Node (STC-01) Invalid. Two inflowing conduits (I36-486902.1 and I36-486903.1)
+
+Western conduit (I36-486901.1 -> I36-486902 -> I36-486902.1) will remain;
+Eastern conduit (I36-486901.2 -> I36-486903 -> I36-486903.1) will be removed
+  (mainly due to the naming convention)
+

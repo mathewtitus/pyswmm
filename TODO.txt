@@ -1,0 +1,33 @@
+# Code maintenance
+learning_tf.py has updated system paths ("templates/[template]/[run_name]/...")
+- update other files accordingly
+  [ ] learning_pyswmm?
+  [ ] swmm_timeseries
+  [ ] simulation_extractor
+  [ ] simulation_sampler
+  [ ] swmm_utils
+
+# Validation against SWMM
+look at individual elements' time series of capacity (comparison between est. and SWMM output)
+investigate error propagation (run for > one 15 min increment)
+- look at time series where one step's outputs lead to next step's inputs
+
+# Putting model onto live server
+[ ] create initial conditions files - light, med, heavy rain
+  - select relevant periods from monitor station data
+  - input one week time series, ending on 24 hours of desired rain, into ICM model
+  - match node invert depth to monitor station (DFINAL??)
+[ ] write script to record rain observed
+[ ] write script to translate recent observations + predicted rain levels into 
+[ ] move model keras files to VM
+[ ] modify crontab to run
+  - gather forecast
+  - gather recent rain
+  - generate initial model inputs (choose initial state file + recent rain, modulate with noise terms)
+  - execute model swarm
+  - compile estimates
+  - record as a feature layer for Map on S3 bucket
+
+# Validation against ICM
+...
+
