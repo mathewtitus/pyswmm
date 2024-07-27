@@ -101,11 +101,11 @@ def plot_loss(history, ax=None):
 
 
 
+if __name__=="__main__":
+  args = sys.argv()
+  print(args)
 
-
-# if __name__=="__main__":
-#   args = sys.argv()
-#   print(args)
+# TODO: Re-Indent
 
 # define model info
 template = "ws_full"  # name of system (topology)
@@ -135,6 +135,9 @@ test_data = get_data(path2runs, run4testing)
 
 [X1, Y1, t1] = training_data
 [X2, Y2, t2] = test_data
+
+assert (X1.columns == X2.columns), "Input columns don't match between training & test sets.";
+assert (Y1.columns == Y2.columns), "Output columns don't match between training & test sets.";
 
 # define NN topology
 input_shape = X1.shape[1]
@@ -167,17 +170,13 @@ model.save(f"{path2models}/{run_name}_model_{current_timestamp}.keras")
 model_metadata = dict(
   training_runs=runs4training.tolist(),
   test_runs=run4testing.tolist(),
-  model_path=f"{path2models}/{run_name}_model_{current_timestamp}.keras"
+  model_path=f"{path2models}/{run_name}_model_{current_timestamp}.keras",
+  input_vars=X1.columns.to_list(),
+  output_vars=Y1.columns.to_list()
 )
 
 with open(f"{path2models}/{run_name}_metadata_{current_timestamp}.json", "w") as f:
   json.dump(model_metadata, f, indent=1)
-
-# with open(f"{path2models}/{run_name}_training_runs_{current_timestamp}", "w") as f:
-#   json.dump(runs4training.tolist(), f)
-
-# with open(f"{path2models}/{run_name}_test_runs_{current_timestamp}", "w") as f:
-#   json.dump(run4testing.tolist(), f)
 
 # X1.to_json(f"{path2models}/{run_name}_X_{current_timestamp}.json")
 # Y1.to_json(f"{path2models}/{run_name}_Y_{current_timestamp}.json")
@@ -188,11 +187,6 @@ with open(f"{path2models}/{run_name}_metadata_{current_timestamp}.json", "w") as
 # plt.show()
 
 
-# for col in X.columns:
-#   plt.plot(times, X[col])
-#   plt.plot(times, X2[col])
-#   plt.title(col)
-#   plt.show()
 
 
 
@@ -207,6 +201,7 @@ pass
 
 
 # test model's performance
+
 
 
 # calculate residuals
@@ -240,3 +235,31 @@ fig.set_size_inches((10,6))
 plt.savefig(f"{path2figs}/{run_name}_val_{current_timestamp}.png")
 plt.show()
 
+
+# investigate error at a particular node
+Predicted = pd.DataFrame(data=Y2p, columns=Y.columns)
+Observed = Y2.__deepcopy__()
+
+# choose variable of interest
+var = "C2_capacity_pred"
+
+for var in Observed.columns:
+  fig, ax = plt.subplots(2,1)
+  fig.set_size_inches((14,6))
+  ax[0].set_title("SWMM vs. Surrogate")
+  ax[0].plot(times2, Observed[var], label="observed")
+  ax[0].plot(times2, Predicted[var], label="predicted")
+  ax[0].set_ylabel(var.rstrip("_pred"))
+  ax[0].legend()
+  PercError = np.abs(Observed[var] - Predicted[var])/Observed[var]
+  ax[1].plot(times2, 100*PercError, label="% error")
+  ax[1].set_ylabel("Percent Error")
+  ax[1].set_xlabel("Time")
+  ax[1].legend()
+  plt.savefig(f"./templates/{template}/models/{run_name}_val_{var}.png")
+  plt.show()
+ 
+
+
+
+ 
