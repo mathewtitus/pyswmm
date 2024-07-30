@@ -101,11 +101,11 @@ def plot_loss(history, ax=None):
 
 
 
+if __name__=="__main__":
+  args = sys.argv()
+  print(args)
 
-
-# if __name__=="__main__":
-#   args = sys.argv()
-#   print(args)
+# TODO: Re-Indent
 
 # define model info
 template = "ws_full"  # name of system (topology)
@@ -135,6 +135,9 @@ test_data = get_data(path2runs, run4testing)
 
 [X1, Y1, t1] = training_data
 [X2, Y2, t2] = test_data
+
+assert (X1.columns == X2.columns), "Input columns don't match between training & test sets.";
+assert (Y1.columns == Y2.columns), "Output columns don't match between training & test sets.";
 
 # define NN topology
 input_shape = X1.shape[1]
@@ -168,8 +171,8 @@ model_metadata = dict(
   training_runs=runs4training.tolist(),
   test_runs=run4testing.tolist(),
   model_path=f"{path2models}/{run_name}_model_{current_timestamp}.keras",
-  in_vars=X1.columns.tolist(),
-  out_vars=Y1.columns.tolist()
+  input_vars=X1.columns.to_list(),
+  output_vars=Y1.columns.to_list()
 )
 
 with open(f"{path2models}/{run_name}_metadata_{current_timestamp}.json", "w") as f:
@@ -187,6 +190,7 @@ pass
 
 
 # test model's performance
+
 
 
 # calculate residuals
@@ -230,3 +234,4 @@ plt.show()
 
 
 
+ 
