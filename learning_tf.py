@@ -167,33 +167,13 @@ model.save(f"{path2models}/{run_name}_model_{current_timestamp}.keras")
 model_metadata = dict(
   training_runs=runs4training.tolist(),
   test_runs=run4testing.tolist(),
-  model_path=f"{path2models}/{run_name}_model_{current_timestamp}.keras"
+  model_path=f"{path2models}/{run_name}_model_{current_timestamp}.keras",
+  in_vars=X1.columns.tolist(),
+  out_vars=Y1.columns.tolist()
 )
 
 with open(f"{path2models}/{run_name}_metadata_{current_timestamp}.json", "w") as f:
   json.dump(model_metadata, f, indent=1)
-
-# with open(f"{path2models}/{run_name}_training_runs_{current_timestamp}", "w") as f:
-#   json.dump(runs4training.tolist(), f)
-
-# with open(f"{path2models}/{run_name}_test_runs_{current_timestamp}", "w") as f:
-#   json.dump(run4testing.tolist(), f)
-
-# X1.to_json(f"{path2models}/{run_name}_X_{current_timestamp}.json")
-# Y1.to_json(f"{path2models}/{run_name}_Y_{current_timestamp}.json")
-# t1.save(f"{path2models}/{run_name}_t_{current_timestamp}.json")
-
-# plt.plot(X.S1_rainfall_m0)
-# plt.plot(X2.S1_rainfall_m0)
-# plt.show()
-
-
-# for col in X.columns:
-#   plt.plot(times, X[col])
-#   plt.plot(times, X2[col])
-#   plt.title(col)
-#   plt.show()
-
 
 
 fig, ax = plt.subplots()
@@ -216,6 +196,9 @@ L2 = np.sqrt(np.sum(err**2, axis=1))
 L2_spatial = np.sqrt(np.sum(err**2, axis=0))
 
 # save error info
+with open(f"{path2perf}/error_{current_timestamp}.json", "w") as f:
+  json.dump(err.to_numpy(), f, indent=1) # TODO: Test
+
 with open(f"{path2perf}/L2_temporal_{current_timestamp}.json", "w") as f:
   json.dump(L2.to_list(), f, indent=1)
 
@@ -226,6 +209,9 @@ with open(f"{path2perf}/L2_spatial_{current_timestamp}.json", "w") as f:
 fig, ax = plt.subplots()
 
 # plot error
+# TODO: save times as ??? in ???
+# TODO: collect t2 from ??? and break up by simulation, plotting each separately (no crossing lines from t_final to t_init)
+# TODO: color using goldenrod `color=(218/255, 165/255, 32/255)` and black `color=(0, 0, 0)`
 ax.plot(t2, L2, label="error")
 
 # determine unlagged rainfall predictor & plot
@@ -239,4 +225,8 @@ plt.title(f"Model trained on {X1.shape[0]} data points, validated on a hold-out 
 fig.set_size_inches((10,6))
 plt.savefig(f"{path2figs}/{run_name}_val_{current_timestamp}.png")
 plt.show()
+
+# TODO: Create time series comparisons between SWMM output and surrogate output (pick worst node & link, pick typical node & link)
+
+
 

@@ -56,7 +56,7 @@ nodes.loc[nodes.HoursFlooded>0.5, 'draw_color'] = '#751167' #purple, flooded nod
 nodes.loc[nodes.HoursFlooded>1, 'draw_size'] = nodes.loc[nodes.HoursFlooded>1, 'HoursFlooded'] * 12
 
 # pass custom init arguments into the Nodes object instead of using default settings referenced by m.nodes() 
-conds = Condu(
+conds = Conduit(
     model=m, 
     inp_sections=['junctions', 'storages', 'outfalls'],
     rpt_sections=['Node Depth Summary', 'Node Inflow Summary'],
