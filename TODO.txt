@@ -13,13 +13,17 @@ investigate error propagation (run for > one 15 min increment)
 - look at time series where one step's outputs lead to next step's inputs
 
 # Putting model onto live server
-[ ] create initial conditions files - light, med, heavy rain
-  - select relevant periods from monitor station data
-  - input one week time series, ending on 24 hours of desired rain, into ICM model
-  - match node invert depth to monitor station (DFINAL??)
+[x] create initial conditions file - light, med, heavy rain
+  o- select relevant periods from monitor station data
+  o- input one week time series, ending on 24 hours of desired rain, into ICM model
+  o- match node invert depth to monitor station (DFINAL??)
+[ ] create method to extract a single time from a SWMM output file
+[ ] create method to convert volume info (ICM links) into capacity info (SWMM/NEWC links)
+
 [ ] write script to record rain observed
-[ ] write script to translate recent observations + predicted rain levels into 
-[ ] move model keras files to VM
+[ ] write script to translate recent observations + predicted rain levels into model input dataframe
+
+[x] move model keras files to VM
 [ ] modify crontab to run
   - gather forecast
   - gather recent rain

@@ -20,7 +20,8 @@ from pandas import concat
 
 
 # sim_path = r'./tutorials/Latte/Example1b.inp'
-sim_path = 'templates/demo_system/3day.inp'
+# sim_path = 'templates/demo_system/3day.inp'
+sim_path = 'templates/ws_full/3day.inp'
 run_sim = False;
 
 ss.execute_this_shit()

@@ -267,16 +267,16 @@ def execute_this_shit(template:str="demo_system", rgs:dict=demo_rgs, num_procs:i
 
 
 
-if __name__=="__main__":
+# if __name__=="__main__":
   # input(f"Sure you want to overwrite everything in the {template} folder?")
 
   # run demo version
   # execute_this_shit()
 
-  # run WS full system sim
-  template = "ws_full"
-  rgs = { "names": ["TS1"], "days": 3 }
-  execute_this_shit(template, rgs, 8)
+  # # run WS full system sim
+  # template = "ws_full"
+  # rgs = { "names": ["TS1"], "days": 3 }
+  # execute_this_shit(template, rgs, 8)
 
 
 #
