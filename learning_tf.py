@@ -142,7 +142,7 @@ if __name__=="__main__":
   print(f"args: {args}")
 
   # define model info
-  template = "ws_full"  # name of system (topology)
+  template = "ws_simple"  # name of system (topology)
   run_name = "3day"     # name of scenario
   num_runs = 80         # number of runs to load for training the model
   num_test_runs = 5     # number of runs to use in testing
@@ -161,14 +161,14 @@ if __name__=="__main__":
   run_list = [int(x.rstrip(".json")) for x in run_list if (x[-5:]==".json")]
 
 
-  # ######## TODO: REMOVE
+  # ######## TODO: REMOVE #######
   # current_timestamp = "1722322971"
   # model = tf.keras.models.load_model(f"templates/ws_full/3day/models/3day_model_{current_timestamp}.keras")
   # with open(f"templates/ws_full/3day/models/3day_metadata_{current_timestamp}.json", "r") as f:
   #   model_metadata = json.load(f)
   # runs4training = model_metadata['training_runs']
   # run4testing = model_metadata['test_runs']
-  # #####################
+  # #############################
 
 
   # define training & test data
@@ -371,3 +371,7 @@ if __name__=="__main__":
   # plt.show()
 
 
+
+
+
+#

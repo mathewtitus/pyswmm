@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import swmm_utils as su
 import swmm_timeseries as st
 import simulation_sampler as ss
-from pyswmm import Simulation, Nodes, Links, Output, SubcatchSeries, NodeSeries, LinkSeries, RainGages, SystemSeries, SimulationPreConfig, Subcatchments
+from pyswmm import Simulation, Nodes, Links, SubcatchSeries, NodeSeries, LinkSeries, RainGages, SystemSeries, SimulationPreConfig, Subcatchments
 
 from pandas import DataFrame as df
 from pandas import concat
@@ -44,8 +44,15 @@ if run_sim:
     sim.close()
 
 
-# output_filepath = './tutorials/Latte/Example1b.out'
-# out = Output(output_filepath)
+
+
+
+
+from pyswmm import Output #, SubcatchSeries, NodeSeries, LinkSeries, RainGages, SystemSeries, SimulationPreConfig, Subcatchments, Nodes, Links
+
+
+output_filepath = './templates/ws_full/raw_data/3.out'
+out = Output(output_filepath)
 
 # js = su.get_data(output_filepath)
 # series = su.get_time_series(output_filepath)

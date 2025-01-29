@@ -225,20 +225,20 @@ def generate_samples(template, rain_gage_attrs):
 
 def step_through_samples(template_name, rain_gage_attrs, num_procs=1):
   '''
-  ...
+  Prep folder; generate rainfall scenarios for the template; execute each associated simulation.
   '''
 
   # find template file
   template = f"templates/{template_name}/{rain_gage_attrs['days']}day.inp"
   output_root = f"templates/{template_name}/{rain_gage_attrs['days']}day"
 
-  if os.path.exists(output_root+"/"):
-    pass
-  else:
+  if not os.path.exists(output_root+"/"):
     os.makedirs(output_root+"/")
+    assert os.path.exists(output_root+"/"), "The `makedirs` call in `simulation_sampler` failed."
+  
   print(f"Running template {template} to folder {output_root}/")
 
-  # generate congif files
+  # generate config files
   configs = generate_samples(template, rain_gage_attrs)
 
   # run the sample
@@ -256,7 +256,7 @@ demo_rgs = {
 
 def execute_this_shit(template:str="demo_system", rgs:dict=demo_rgs, num_procs:int=1):
   '''
-  sdfjajd
+  Wrapper on sampler with default values.
   '''
 
   step_through_samples(

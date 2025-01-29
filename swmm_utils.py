@@ -1,4 +1,4 @@
-# utils.py
+# swmm_utils.py
 # Mathew Titus
 # April, 2024
 # 
@@ -48,7 +48,7 @@ def link_data(output_path):
 
   # get time series variables
   first_link_name = out.links.keys().__iter__().__next__()
-  print(f"First link name: {first_link_name}")
+  # print(f"First link name: {first_link_name}")
   all_vars = list(LinkSeries(out)[first_link_name].__annotations__.keys())
   print("Variable list:")
   for var in all_vars: print(var)
@@ -83,7 +83,7 @@ def node_data(output_path):
   '''
   Returns a dictionary indexed by node name, with dataframe values
   of all node time series from the sim:
-    time, capacity, flow_depth, flow_rate, flow_velocity, flow_volume, pollut_conc_0
+    invert_depth, hydraulic_head, ponded_volume, lateral_inflow, total_inflow, flooding_losses, pollut_conc_0
   '''
   data = {}
 
@@ -270,7 +270,7 @@ def swmm_TS_template(name, days):
 
 
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 # TODO: 
 def view_rainfall(output_path):

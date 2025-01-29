@@ -6,8 +6,7 @@
 # 
 ######################################################################
 
-import pyswmm
-from pyswmm import Output, RainGages, SystemSeries, SimulationPreConfig
+from pyswmm import Output#, RainGages, SystemSeries, SimulationPreConfig
 
 
 def get_times(output_path):
