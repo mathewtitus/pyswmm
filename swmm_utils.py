@@ -57,9 +57,9 @@ def link_data(output_path):
     dfs = []
 
     name = link_names[_]
-    print(f"Loading link {name}")
+    # print(f"Loading link {name}")
     link = LinkSeries(out)[name]
-    print(f"Link loaded: {link}")
+    # print(f"Link loaded: {link}")
 
     # collect time series
     for var in all_vars:
@@ -268,25 +268,88 @@ def swmm_TS_template(name, days):
   return output_string
 
 
+def plot_monitor_data(data):
+  import matplotlib.pyplot as plt
+
+  # Temp sensor ids
+  temp_nodes = ["33-486014", "36-474088", "33-478019"]
+  temp_links = ["33-486014.1", "36-474088.1", "33-478019.1"]
+  # Permanent sensors
+  perm_nodes = ["36-484057", "36-486016", "33-488083", "36-486002", "36-486023"]
+  perm_links = ["36-484057.1", "36-486016.1", "33-488083.1", "36-486002.1", "36-486011.1"]
+  # Meso-network ids
+  meso_nodes = ["33-486014", "36-486019", "36-486023", "36-484035", "33-478019", "36-482015", "36-482055", 
+                "33-472048", "30-474069", "36-484057", "39-480015", "39-476059", "39-476057", "39-478058", 
+                "36-476026"]
+  meso_links = ["33-486014.1", "36-484035.1", "36-482015.1", "36-482055.1", "33-472048.1", "30-474069.1", 
+                "39-480015.1", "39-476059.1", "39-476057.1", "39-478058.1", "36-476026.1"]
+  # filtered meso_links of temp_ or perm_links content
+
+  node_data = dict.fromkeys(temp_nodes + perm_nodes + meso_nodes)
+  [node_data.update({key: data['nodes'][key]}) for key in node_data.keys()]
+  link_data = dict.fromkeys(temp_links + perm_links + meso_links)
+  [link_data.update({key: data['links'][key]}) for key in link_data.keys()]
+
+  # node fig setup
+  fig, ax = plt.subplots(4,1, figsize=(12,10))
+  # plot rain
+  ax[3].plot(data['series'].time, data['series'].rainfall)
+  # plot invert_depths
+  for _ in temp_nodes:
+    ax[0].plot(node_data[_].time, node_data[_].invert_depth)
+  ax[0].legend(list(node_data.keys()))
+  for _ in perm_nodes:
+    ax[1].plot(node_data[_].time, node_data[_].invert_depth)
+  ax[1].legend(list(node_data.keys()))
+  for _ in meso_nodes:
+    ax[2].plot(node_data[_].time, node_data[_].invert_depth)
+  ax[2].legend(list(node_data.keys()))
+  # annotate & save
+  # plt.title("Invert Depth")
+  ax[3].title.set_text('Invert Depth')
+  plt.savefig("latest_run_node_data.png")
+  plt.close()
+
+  # node fig setup
+  fig, ax = plt.subplots(4,1, figsize=(12,10))
+  # plot rain
+  ax[3].plot(data['series'].time, data['series'].rainfall)
+  # plot invert_depths
+  for _ in temp_links:
+    ax[0].plot(link_data[_].time, link_data[_].capacity)
+  ax[0].legend(list(link_data.keys()))
+  for _ in perm_links:
+    ax[1].plot(link_data[_].time, link_data[_].capacity)
+  ax[1].legend(list(link_data.keys()))
+  for _ in meso_links:
+    ax[2].plot(link_data[_].time, link_data[_].capacity)
+  ax[2].legend(list(link_data.keys()))
+  # annotate & save
+  # fig.title("Capacity")
+  plt.savefig("latest_run_link_data.png")
+  plt.close()
+
+  return node_data, link_data
+
 
 
 # import matplotlib.pyplot as plt
 
-# TODO: 
-def view_rainfall(output_path):
-  '''
-  '''
-  # get list of raingages & a sample subcatchment for each gage
+# # TODO: 
+# def view_rainfall(output_path):
+#   '''
+#   '''
+#   # get list of raingages & a sample subcatchment for each gage
 
-  # get the rainfall time series for each sample subc
-  series = subcatch_data(output_path)
+#   # get the rainfall time series for each sample subc
+#   series = subcatch_data(output_path)
 
-  # get total rainfall
-  rain = get_time_series(output_path).get(['time', 'rainfall'])
+#   # get total rainfall
+#   rain = get_time_series(output_path).get(['time', 'rainfall'])
 
-  # plot each subcatchment in vertical subplots
-  plt.plot(rain.time, rain.rainfall)
-  plt.show()
+#   # plot each subcatchment in vertical subplots
+#   plt.plot(rain.time, rain.rainfall)
+#   plt.show()
 
 
 
