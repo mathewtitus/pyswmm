@@ -2,8 +2,7 @@
 # simulation_extractor.py
 # Mathew Titus, April 2023
 # 
-# TODO: Add a check in ext2json so if a file has already 
-# been converted to output it gets skipped.
+# 
 # 
 ########################################################################
 
@@ -90,9 +89,11 @@ def tf_prep(template_name, swmm_outfile, var_file):
     model_defn = json.load(f)
 
   # get output from model
+  print("running `get_data` call.")
   out = su.get_data(run_folder)
 
   # extract data from run
+  print("running `extraction` call.")
   df = extraction(out, model_defn)
   
   # find starting position
@@ -142,22 +143,26 @@ def tf_prep(template_name, swmm_outfile, var_file):
 def ext2json(template_name, run_name, var_file):
   '''
   Goes to run folder, selects each output in turn and converts to JSON
-  Find output at ./templates/{template_name}/outputs/{run_name}/
+  Find output at ./templates/{template_name}/{run_name}/outputs/
   '''
   print(f"ext2json call\n\ttemplate_name: {template_name}\n\trun_name: {run_name}\n\tvar_file: {var_file}")
   # find runs
   folder_name = f"templates/{template_name}"
-  files = [x for x in os.listdir(f"{folder_name}/{run_name}") if x.find(".out")>=0]
+  files = [x for x in os.listdir(f"{folder_name}/{run_name}/outputs/") if x.find(".out")>=0]
 
   # prep save path
-  save_loc = f"templates/{template_name}/outputs/{run_name}/"
+  save_loc = f"templates/{template_name}/{run_name}/outputs_13step/"
   if not os.path.exists(save_loc):
     os.makedirs(save_loc)
 
   # iterate through run extractions
+  prior_extractions = [x for x in os.listdir(save_loc) if x.find(".json")>=0]
   for run in files:
     outfile = run.replace(".out", ".json")
-    df, times = tf_prep(folder_name, f"{run_name}/{run}", var_file)
+    # skip if already processed into this destination folder
+    if outfile in prior_extractions: continue
+    
+    df, times = tf_prep(folder_name, f"{run_name}/outputs/{run}", var_file)
     df = df.assign(time=times)
     js = df.to_json(f"{save_loc}{outfile}", indent=1)
 
@@ -166,8 +171,38 @@ def ext2json(template_name, run_name, var_file):
 
 
 if __name__=="__main__":
-  ext2json("ws_full", "3day", "var_defs.json")
+  ext2json("ws_corrected", "3day", "var_defs.json")
 
+  # outfile = "./templates/ws_corrected/3day/outputs/2.out"
+  # out = su.get_data(outfile)
+  # outfile2 = "./templates/ws_corrected/3day/outputs/60.out"
+  # out2 = su.get_data(outfile2)
+  # with open("./templates/ws_corrected/var_defs.json", "r") as f:
+  #   model_defn = json.load(f)
+  
+  # data = extraction(out, model_defn)
+  # data2 = extraction(out2, model_defn)
+
+  # plottables = [x for x in data.columns if x.find("capacity")>=0]
+  # rainname = [x for x in data.columns if x.find('rainfall') >= 0]
+  # conduit_selection = np.random.choice(plottables, 10)
+
+  # import matplotlib.pyplot as plt
+  # f, ax = plt.subplots(3,1, figsize=(16,11))
+
+  # data[conduit_selection].plot(kind="line", ax=ax[0])
+  # ax[0].set_xlabel("Sample 1")
+
+  # data2[conduit_selection].plot(kind="line", ax=ax[1])
+  # ax[1].set_xlabel("Sample 2")
+
+  # plt.sca(ax[2])
+  # plt.plot(data['1352_rainfall'])
+  # plt.plot(data2['1352_rainfall'])
+  # ax[2].legend(['Sample 1', 'Sample 2'])
+
+  # plt.savefig("figg.png")
+  # plt.close()
 
 
 #

@@ -18,13 +18,13 @@ investigate error propagation (run for > one 15 min increment)
   o- input one week time series, ending on 24 hours of desired rain, into ICM model
   o- match node invert depth to monitor station (DFINAL??)
 [ ] create method to extract a single time from a SWMM output file
-[ ] create method to convert volume info (ICM links) into capacity info (SWMM/NEWC links)
+[-] create method to convert volume info (ICM links) into capacity info (SWMM/NEWC links)
 
 [ ] write script to record rain observed
-[ ] write script to translate recent observations + predicted rain levels into model input dataframe
+[x] write script to translate recent observations + predicted rain levels into model input dataframe
 
 [x] move model keras files to VM
-[ ] modify crontab to run
+[x] modify crontab to run
   - gather forecast
   - gather recent rain
   - generate initial model inputs (choose initial state file + recent rain, modulate with noise terms)

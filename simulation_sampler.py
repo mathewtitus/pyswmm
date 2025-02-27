@@ -34,32 +34,127 @@ import swmm_timeseries as st
 # The hourly rainfall is then modeled as a sequence of iid poisson draws, or as an autocorrelated
 # time series; the vector drawn is then scaled to have sum equal to the earlier r.v. sampled.
 
+# intensity_class = {
+#   0: {
+#     "min": 0.0,
+#     "max": 0.3,
+#     "start": 0.0,
+#     "length": 0.3
+#   },
+#   1: {
+#     "min": 0.3,
+#     "max": 0.6,
+#     "start": 0.3,
+#     "length": 0.3
+#   },
+#   2: {
+#     "min": 0.6,
+#     "max": 1.0,
+#     "start": 0.6,
+#     "length": 0.4
+#   },
+#   3: {
+#     "min": 1.0,
+#     "max": 8.0,
+#     "start": 1.0,
+#     "length": 7.0
+#   }
+# }
+
 intensity_class = {
   0: {
     "min": 0.0,
-    "max": 0.3,
+    "max": 1.5,
     "start": 0.0,
-    "length": 0.3
+    "length": 1.5
   },
   1: {
-    "min": 0.3,
-    "max": 0.6,
-    "start": 0.3,
-    "length": 0.3
+    "min": 1.5,
+    "max": 3.0,
+    "start": 1.5,
+    "length": 1.5
   },
   2: {
-    "min": 0.6,
-    "max": 1.0,
-    "start": 0.6,
-    "length": 0.4
+    "min": 3.0,
+    "max": 10.0,
+    "start": 3.0,
+    "length": 7.0
   },
   3: {
-    "min": 1.0,
-    "max": 8.0,
-    "start": 1.0,
-    "length": 7.0
+    "min": 10.0,
+    "max": 25.0,
+    "start": 10.0,
+    "length": 15.0
+  },
+  4: {
+    "min": 25.0,
+    "max": 40.0,
+    "start": 25.0,
+    "length": 15.0
   }
 }
+
+
+def create_inp_file(template: str, duration: int, series_name: str=""):
+  '''
+  Takes an existing .inp file as `template`, defining the wastewater system,
+  and modifies the [TIMESERIES] section to hold a single raingage time series.
+  
+  NB: We assume the time series is given at an hourly resolution.
+
+  NB: This function will have to be modified to allow for multiple time series.
+  '''
+  # define output filename
+  new_input_file = os.path.dirname(template) + "/" + str(int(duration/24)) + "day.inp"
+
+  with open(template, 'r') as f:
+    content = f.readlines()
+
+    # fix start time / date data (to ensure integer valued time series "times" play well with sim)
+    # TODO
+
+    # detect start of timeseries section
+    for index, line in enumerate(content):
+      if "[TIMESERIES]" in line:
+        index += 1
+        line = content[index]
+        break
+
+    # find first line of timeseries by skipping commented out lines
+    while (line.find(";") >= 0)|(len(line)==0):
+      index += 1
+      line = content[index]
+    
+    # collect header data
+    header = content[:index]
+
+    # define time series name
+    if len(series_name) == 0:
+      # default to 'TS1'
+      series_name = "TS1" 
+
+      # grab first column entry, if there were lines in the TIMESERIES section to draw on
+      if line.find("[") <= 0:
+        series_name = line.split()[0]
+
+    # collect content after TIMESERIES section
+    while line.find("[")<0:
+      index += 1
+      line = content[index]
+
+    footer = content[index:]
+
+    # assemble zero time series of appropriate length
+    series_body = []
+    for _hr in range(duration):
+      new_line = "    ".join([series_name, str(_hr), "0.0", "\n"])
+      series_body.append(new_line)
+
+    # assemble text into .inp file with appropriate
+    new_content = header + series_body + ["\n"] + footer
+
+    with open(new_input_file, 'w+') as g:
+      g.writelines(new_content)
 
 
 def get_constant(length):
@@ -230,7 +325,7 @@ def step_through_samples(template_name, rain_gage_attrs, num_procs=1):
 
   # find template file
   template = f"templates/{template_name}/{rain_gage_attrs['days']}day.inp"
-  output_root = f"templates/{template_name}/{rain_gage_attrs['days']}day"
+  output_root = f"templates/{template_name}/{rain_gage_attrs['days']}day/outputs"
 
   if not os.path.exists(output_root+"/"):
     os.makedirs(output_root+"/")
@@ -243,7 +338,7 @@ def step_through_samples(template_name, rain_gage_attrs, num_procs=1):
 
   # run the sample
   for ind, conf in tqdm(enumerate(configs)):
-    with Simulation(template,  outputfile=f"{output_root}/{ind+64}.out", sim_preconfig = conf) as sim:
+    with Simulation(template,  outputfile=f"{output_root}/{ind+125}.out", sim_preconfig = conf) as sim:
       for step in sim:
         pass
 
@@ -267,16 +362,16 @@ def execute_this_shit(template:str="demo_system", rgs:dict=demo_rgs, num_procs:i
 
 
 
-# if __name__=="__main__":
+if __name__=="__main__":
   # input(f"Sure you want to overwrite everything in the {template} folder?")
 
   # run demo version
   # execute_this_shit()
 
-  # # run WS full system sim
-  # template = "ws_full"
-  # rgs = { "names": ["TS1"], "days": 3 }
-  # execute_this_shit(template, rgs, 8)
+  # run WS full system sim
+  template = "ws_corrected"
+  rgs = { "names": ["TS1"], "days": 3 }
+  execute_this_shit(template, rgs, 1)
 
 
 #
