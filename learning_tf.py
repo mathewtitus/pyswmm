@@ -432,8 +432,9 @@ if __name__=="__main__":
 
   # define model info
   template = "ws_corrected"  # name of system (topology)
+  # template = "ws_simple" # name of system (topology)
   run_name = "3day"     # name of scenario
-  num_runs = 160 # 80        # number of runs to load for training the model
+  num_runs = 100 # 80        # number of runs to load for training the model
   num_test_runs = 8     # number of runs to use in testing
   model_structure = "flow_monitor" # link_only; flow_monitor; meso; full
   split = 0.3           # fraction of data to devote to testing; 1-split goes to training

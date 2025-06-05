@@ -1,0 +1,14 @@
+{
+  "input": {
+    "nodes": ["time", "invert_depth"],
+    "links": ["time", "capacity"],
+    "subcatchments": ["time", "rainfall"]
+  },
+  "output": {
+    "nodes": ["time", "invert_depth"],
+    "links": ["time", "capacity"]
+  },
+  "time_steps": 13,
+  "horizon": 1,
+  "warmup_days": 1
+}
