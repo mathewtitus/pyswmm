@@ -3,6 +3,10 @@
 # June, 2024
 # 
 # NB: Run from `pyswmm` repo root
+# NB: Update SWMM output filepath in `populate_paths` to select desired
+#     JSON data family (# steps, cumulative vars, etc.)
+# 
+# TODO: Read keras.layers.Dropout documentation (confirm structure from `make_model`)
 # 
 ################################################################################
 
@@ -17,10 +21,12 @@ import matplotlib.pyplot as plt
 from simulation_extractor import extraction, tf_prep
 from swmm_utils import temp_nodes, temp_links, perm_nodes, perm_links, meso_nodes, meso_links
 
+log_dir = "logs/fit/" + dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+
 
 def populate_paths(template, run_name):
   # setup file paths
-  path2runs = f"templates/{template}/{run_name}/outputs_9step" # NB: Update
+  path2runs = f"templates/{template}/{run_name}/outputs_13step" # Update here
   path2models = f"templates/{template}/{run_name}/models"
   path2figs = f"templates/{template}/{run_name}/figures"
   path2perf = f"templates/{template}/{run_name}/performance"
@@ -155,12 +161,12 @@ def get_topology(topo_defn):
   return model
 
 
-def make_model(input_shape, hidden1_shape, hidden2_shape, output_shape):
+def make_model(input_shape, hidden1_shape, hidden2_shape, output_shape, opt=tf.keras.optimizers.Adam(0.001)):
   # define MPL model
   model = tf.keras.models.Sequential([
     tf.keras.layers.Input(shape=(input_shape,)),
     tf.keras.layers.Dense(hidden1_shape, activation='relu'),
-    tf.keras.layers.Dropout(0.4), # read these docs
+    tf.keras.layers.Dropout(0.4),
     tf.keras.layers.Dense(hidden2_shape, activation='relu'),
     tf.keras.layers.Dense(output_shape)
   ])
@@ -434,11 +440,11 @@ if __name__=="__main__":
   template = "ws_corrected"  # name of system (topology)
   # template = "ws_simple" # name of system (topology)
   run_name = "3day"     # name of scenario
-  num_runs = 100 # 80        # number of runs to load for training the model
-  num_test_runs = 8     # number of runs to use in testing
+  num_runs = 200 # 80        # number of runs to load for training the model
+  num_test_runs = 50     # number of runs to use in testing
   model_structure = "flow_monitor" # link_only; flow_monitor; meso; full
-  split = 0.3           # fraction of data to devote to testing; 1-split goes to training
-  epochs = 75           # number of training epochs
+  split = 0.2           # fraction of data to devote to testing; 1-split goes to training
+  epochs = 500           # number of training epochs
 
   # create dirs
   # NB: update this method to target different directories (e.g. if you want a different extraction method - 3 hour history, etc.)
@@ -491,17 +497,23 @@ if __name__=="__main__":
   if model2load:
     pass
   else:
-    model = make_model(X1.shape[1], int(hidden_shapes[1]), int(hidden_shapes[0]), Y1.shape[1])
-
-    # fit model
+    optimizer = tf.keras.optimizers.Adadelta() # SGD(0.1) # SGD(0.01) # Adam(0.01)
+    model = make_model(X1.shape[1], int(hidden_shapes[1]), int(hidden_shapes[0]), Y1.shape[1], opt=optimizer)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
+    # fit model & log data
     history = model.fit(
       X1,
       Y1,
+      batch_size=8, # default: 32
       epochs=epochs,
       # Suppress logging.
       verbose=2,
       # Calculate validation results on [some]% of the training data.
-      validation_split = split
+      # validation_split = split,
+      validation_data=(X2, Y2),
+      shuffle=True,
+      callbacks=[tensorboard_callback]
     )
 
     # save model

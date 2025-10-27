@@ -2,7 +2,7 @@
 # simulation_extractor.py
 # Mathew Titus, April 2023
 # 
-# 
+# Converting SWMM output to JSON data.
 # 
 ########################################################################
 
@@ -173,6 +173,8 @@ def ext2json(template_name, run_name, var_file):
 if __name__=="__main__":
   ext2json("ws_corrected", "3day", "var_defs.json")
 
+  # UNUSED EXAMPLE
+
   # outfile = "./templates/ws_corrected/3day/outputs/2.out"
   # out = su.get_data(outfile)
   # outfile2 = "./templates/ws_corrected/3day/outputs/60.out"
@@ -182,6 +184,8 @@ if __name__=="__main__":
   
   # data = extraction(out, model_defn)
   # data2 = extraction(out2, model_defn)
+
+  # PLOTTING
 
   # plottables = [x for x in data.columns if x.find("capacity")>=0]
   # rainname = [x for x in data.columns if x.find('rainfall') >= 0]
