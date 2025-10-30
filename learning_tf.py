@@ -233,10 +233,100 @@ def subdivide_time_series(times):
   return subseries;
 
 
-def plot_loss_wrapper(history, figname):
-  '''
-  Plot the training loss history (train & val data sets).
-  '''
+
+if __name__=="__main__":
+  args = sys.argv
+  print(f"args: {args}")
+
+  # define model info
+  template = "ws_corrected"  # name of system (topology)
+  run_name = "3day"     # name of scenario
+  num_runs = 80         # number of runs to load for training the model
+  num_test_runs = 5     # number of runs to use in testing
+
+  # setup file paths
+  path2runs = f"templates/{template}/{run_name}/outputs"
+  path2models = f"templates/{template}/{run_name}/models"
+  path2figs = f"templates/{template}/{run_name}/figures"
+  path2perf = f"templates/{template}/{run_name}/performance"
+  for _path in [path2runs, path2models, path2figs, path2perf]:
+    if not os.path.exists(_path):
+      os.makedirs(_path)
+
+  # collect run list (as List[int]), i.e. inventory the processed JSON data files
+  run_list = os.listdir(path2runs)
+  run_list = [int(x.rstrip(".json")) for x in run_list if (x[-5:]==".json")]
+
+
+  # ######## TODO: REMOVE
+  # current_timestamp = "1722322971"
+  # model = tf.keras.models.load_model(f"templates/ws_full/3day/models/3day_model_{current_timestamp}.keras")
+  # with open(f"templates/ws_full/3day/models/3day_metadata_{current_timestamp}.json", "r") as f:
+  #   model_metadata = json.load(f)
+  # runs4training = model_metadata['training_runs']
+  # run4testing = model_metadata['test_runs']
+  # #####################
+
+
+  # define training & test data
+  runs4training = np.random.choice(run_list, num_runs)
+  run4testing = np.random.choice(np.setdiff1d(run_list, runs4training), num_test_runs)
+
+  training_data = get_data(path2runs, runs4training)
+  test_data = get_data(path2runs, run4testing)
+
+  [X1, Y1, t1] = training_data
+  [X2, Y2, t2] = test_data
+
+  input("")
+  assert ((X1.columns == X2.columns).all()), "Input columns don't match between training & test sets.";
+  assert ((Y1.columns == Y2.columns).all()), "Output columns don't match between training & test sets.";
+
+  # define NN topology
+  input_shape = X1.shape[1]
+  output_shape = Y1.shape[1]
+  hidden_shapes = np.ceil(
+    np.exp(
+      np.linspace(np.log(output_shape), np.log(input_shape), 4)
+    )
+  )[1:3]
+
+  # set up model
+  model = make_model(X1.shape[1], int(hidden_shapes[1]), int(hidden_shapes[0]), Y1.shape[1])
+
+  # fit model
+  history = model.fit(
+    X1,
+    Y1,
+    epochs=75,
+    # Suppress logging.
+    verbose=2,
+    # Calculate validation results on [some]% of the training data.
+    validation_split = 0.4
+  )
+
+  # save model
+  current_timestamp = str(dt.datetime.now().timestamp()).split('.')[0]
+  model.save(f"{path2models}/{run_name}_model_{current_timestamp}.keras")
+
+  # save metadata
+  model_metadata = dict(
+    training_runs=runs4training.tolist(),
+    test_runs=run4testing.tolist(),
+    model_path=f"{path2models}/{run_name}_model_{current_timestamp}.keras",
+    input_vars=X1.columns.to_list(),
+    output_vars=Y1.columns.to_list()
+  )
+
+  with open(f"{path2models}/{run_name}_metadata_{current_timestamp}.json", "w") as f:
+    json.dump(model_metadata, f, indent=1)
+
+  # save time series' index
+  the_times = t2.apply(lambda x: int(x.timestamp()))
+  with open(f"{path2models}/{run_name}_times_{current_timestamp}.json", "w") as f:
+    f.write(the_times.to_json(indent=1))
+
+
   fig, ax = plt.subplots()
   fig.set_size_inches((10,6))
   plot_loss(history, ax)
