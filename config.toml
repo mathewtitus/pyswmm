@@ -1,0 +1,12 @@
+# config.toml
+title = ""
+
+[topology]
+elements = ["node1", "node2", "node3"]
+adjacency_matrix = [[0, 1, 0],
+                     [1, 0, 1],
+                     [0, 1, 0]]
+
+[server]
+port = 8080
+threads = 4

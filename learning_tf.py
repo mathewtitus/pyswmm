@@ -142,7 +142,7 @@ if __name__=="__main__":
   print(f"args: {args}")
 
   # define model info
-  template = "ws_full"  # name of system (topology)
+  template = "ws_corrected"  # name of system (topology)
   run_name = "3day"     # name of scenario
   num_runs = 80         # number of runs to load for training the model
   num_test_runs = 5     # number of runs to use in testing

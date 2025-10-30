@@ -6,9 +6,14 @@
 # 
 ####################################################################################
 
+import toml
+import argparse
 import numpy as np
 import tensorflow as tf
 from functools import reduce
+
+args = argparse.ArgumentParser(description="Custom Neural Network Module")
+args.add_argument("--config", type=str, default="config.toml", help="Path to the configuration TOML file.")
 
 # Defining the data structure for constructing subnetworks
 # `units` sequence defines the number of neurons in each layer of the subnetwork.
@@ -195,5 +200,14 @@ print(model_output)
 # assert np.allclose(adj, adj.T), "Adjacency martrix must be symmetric."
 
 
+if __name__ == "__main__":
+  args = args.parse_args()
+  with open(args.config, "r") as f:
+      config = toml.load(f)
+  
+  adj = np.array(config['topology']['adjacency_matrix'])
+  elmts = config['topology']['elements']
+
+  
 
 
