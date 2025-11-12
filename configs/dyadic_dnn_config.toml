@@ -5,15 +5,14 @@ title = "Sensor only network."
 template = "ws_corrected"
 run = "3day"
 data_folder = "outputs_13step"
-warmup_days = 1
 num_training_runs = 100
-num_test_runs = 5
+num_test_runs = 1
 
 
 # training regimen
 [training_parameters]
 batch_size = 32
-epochs = 320
+epochs = 32
 # Suppress logging.
 verbose = 2
 validation_split = 0.2
