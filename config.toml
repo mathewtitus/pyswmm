@@ -1,5 +1,7 @@
 # config.toml
 title = "Sensor only network."
+name = "frankenflow"
+description = "Flow monitor model; composed of singly trained subnetwork models."
 
 # data selection
 template = "ws_corrected"
@@ -10,10 +12,16 @@ num_training_runs = 100
 num_test_runs = 5
 
 
+# optimizer definitions
+[optimizer]
+name="adadelta"
+#learning_rate=0.1
+
+
 # training regimen
 [training_parameters]
 batch_size = 32
-epochs = 320
+epochs = 100
 # Suppress logging.
 verbose = 2
 validation_split = 0.2
@@ -36,6 +44,8 @@ adjacency_matrix = [
   [1, 1, 0, 0, 1, 0, 1, 1],
   [0, 0, 0, 1, 0, 0, 1, 1]
 ]
+learning_rate = [0.1, 0.01, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1]
+amplification = [1.0, 10.0, 10.0, 1.0, 1.0, 1.0, 10.0, 1.0]
 
 # TODO: generate this from a `layers` definition and the `topology` info
 [[network]]
@@ -43,48 +53,63 @@ name = "33-488083.1"
 input_vars = ["33-488083.1", "36-486019.1", "36-486015.1", "rainfall"]
 output_vars = ["33-488083.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [14, 7, 3, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "36-486019.1"
 input_vars = ["36-486019.1", "33-488083.1", "33-486014.1", "36-486015.1", "rainfall"]
 output_vars = ["36-486019.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [17, 8, 4, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "33-486014.1"
 input_vars = ["33-486014.1", "36-486019.1", "rainfall"]
 output_vars = ["33-486014.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [10, 5, 2, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "33-478019.1"
 input_vars = ["33-478019.1", "36-486016.1", "rainfall"]
 output_vars = ["33-478019.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [10, 5, 2, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "33-486037.1"
 input_vars = ["33-486037.1", "36-474088.1", "36-486015.1", "rainfall"]
 output_vars = ["33-486037.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [14, 7, 3, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "36-474088.1"
 input_vars = ["36-474088.1", "33-486037.1", "rainfall"]
 output_vars = ["36-474088.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [10, 5, 2, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "36-486015.1"
 input_vars = ["36-486015.1", "33-488083.1", "36-486019.1", "36-486016.1", "33-486037.1", "rainfall"]
 output_vars = ["36-486015.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [21, 10, 5, 1]}
+learning_rate=0.1
+amplification = 1.0
 
 [[network]]
 name = "36-486016.1"
 input_vars = ["36-486016.1", "36-486015.1", "33-478019.1", "rainfall"]
 output_vars = ["36-486016.1_capacity_pred"]
 layers = {type = "Dense", activation = "relu", units = [14, 7, 3, 1]}
-
+learning_rate=0.1
+amplification = 1.0
 
 

@@ -97,7 +97,7 @@ import numpy as np
 
 def get_loss(Y2, Y2p):
   # calculate residuals
-  err = Y2p - Y2 # signed numpy array
+  err = (Y2p - Y2).abs() # signed numpy array
   L2 = np.sqrt(np.sum(err**2, axis=1))
   L2_spatial = np.sqrt(np.sum(err**2, axis=0))
   Linfty_spatial = np.max(np.abs(err), axis=0)

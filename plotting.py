@@ -8,6 +8,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 def plot_loss(history, figname, ax=None):
@@ -172,6 +173,70 @@ def plot_rain_vs_logloss(metadata, times, rain_data, L2, figname, test_subset=[]
   return test_subset
 
 
+def plot_samples(times, target, prediction, num_elements=4, num_series=1, figname="temp_sample_plots.png"):
+  # prepare figure
+  num_charts = min(num_elements, target.shape[1])
+  fig, ax = plt.subplots(num_charts, num_series, sharex=True, sharey=True)
+  if num_charts == 1: ax = [ax]
+  if num_series == 1: ax = np.array([ax]).T
+  fig.set_size_inches((12,7))
+  # ax[0, 0].title(f"Sample of {num_charts} predictions vs. actuals on test data.")
+  print(ax)
+
+  def map_to_unity(series):
+    # return (series - series.min()) / (series.max() - series.min())
+    return series
+
+  # select random elements to plot
+  columns2plot = np.random.permutation(np.arange(target.shape[1]))[:num_charts]
+
+  # select random subset of time series to plot
+  try:
+    series_length = times.nunique().to_numpy()[0] # creates array of length 1
+  except:
+    try:
+      series_length = times.nunique()
+    except:
+      raise Error("Problem with `series_length` variable definition.")
+  total_num_series = times.shape[0]//series_length
+  series2plot = np.random.permutation(np.arange(total_num_series))[:num_series]
+
+  # plot each element
+  for (i, _c) in enumerate(columns2plot):
+    for (j, _s) in enumerate(series2plot):
+      # calculate time indices
+      start_ind = _s * series_length
+      end_ind = start_ind + series_length
+      print(f"start_ind: {start_ind}, end_ind: {end_ind}")
+
+      # plot
+      ax[i][j].plot(
+        times.apply(pd.to_datetime)[start_ind:end_ind].to_numpy().flatten(),
+        map_to_unity(target.iloc[start_ind:end_ind, _c] 
+          if isinstance(target, pd.DataFrame) 
+          else target[start_ind:end_ind, 0, _c]),
+        color='black',
+        alpha=0.7
+      )
+      ax[i][j].plot(
+        times.apply(pd.to_datetime)[start_ind:end_ind].to_numpy().flatten(),
+        map_to_unity(prediction.iloc[start_ind:end_ind, _c]
+          if isinstance(prediction, pd.DataFrame) 
+          else prediction[start_ind:end_ind, 0, _c]),
+        color='green',
+        alpha=0.7
+      )
+      try:
+        ax[i][j].set_xticks([pd.to_datetime(times.iloc[5,0]), pd.to_datetime(times.iloc[-5,0])])
+      except:
+        ax[i][j].set_xticks([pd.to_datetime(times.iloc[5]), pd.to_datetime(times.iloc[-5])])
+    ax[i][0].set_ylabel(_c)
+
+  plt.savefig(figname)
+  plt.show()
+  # plt.close()
+
+
 def plot_worst_elmts(target, prediction, figname):
   err = (prediction - target).abs()
 
@@ -246,7 +311,7 @@ def plot_best_elmts(target, prediction, figname):
   if len(link_colms) > 0:
     # find worst link
     link_err = err.get(link_colms)
-    maggiore_nesso_ind = np.argmin(link_err.min())
+    maggiore_nesso_ind = np.argmin(link_err.mean())
     magg_nesso = link_colms[maggiore_nesso_ind]
 
     # plot worst examples of prediction
