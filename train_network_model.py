@@ -5,6 +5,18 @@
 # Create a `NetworkModel` object as defined in custom_nn.py
 # Train, validate, save metadata, and create figures.
 # 
+# Concatenated "frankenmodel" has weights saved to a `.weights.h5` file:
+#   `models/{config['run']}_model_{current_timestamp}.weights.h5`
+# The associated config file goes to the same file with extension `.json`:
+#   `models/{config['run']}_config_{current_timestamp}.json`
+# The associated metadata is saved to 
+#   `models/{config['run']}_metadata_{current_timestamp}.json`
+# 
+# To load such a model, build a NetworkModel from the saved config file
+# (serialization handled by a from_config method in the class definition),
+# create appropriate input layer, define a tf.keras.model from them, compile it,
+# *then* set the weights according to the data in the weights.h5 file.
+# 
 ################################################################
 
 # imports
@@ -208,7 +220,7 @@ if __name__ == "__main__":
     # save full model
     full_weights_savepath = f"./templates/{config['template']}/{config['run']}/models/{config['run']}_model_{current_timestamp}.weights.h5"
     save_path = full_weights_savepath.replace(".weights.h5", ".keras") # defining for figurename saving protocol below
-    full_config_savepath = full_weights_savepath.replace(".weights.h5", ".json")
+    full_config_savepath = full_weights_savepath.replace("_model_", "_config_").replace(".weights.h5", ".json")
 
     net.save_weights(full_weights_savepath)
     with open(full_config_savepath, 'w') as f:
@@ -234,7 +246,7 @@ if __name__ == "__main__":
       log_dir=log_dir
     )
 
-    full_metadata_savepath = full_config_savepath.replace("_model_", "_metadata_")
+    full_metadata_savepath = full_config_savepath.replace("_config_", "_metadata_")
     with open(full_metadata_savepath, 'w') as f:
       json.dump(model_metadata, f, indent=1)
 
